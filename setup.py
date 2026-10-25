@@ -5,9 +5,9 @@ with open("README.md", "r", encoding = "utf-8") as fh:
 
 setup(
     name='feetech-servo-sdk',
-    version='1.0.0',
+    version='1.0.0+johnmu.1',
     packages=['scservo_sdk'],
-    url='https://github.com/Adam-Software/FEETECH-Servo-Python-SDK',
+    url='https://github.com/johnmu/feetech-servo-sdk-public',
     license='UNLICENSE',
     author='vertigra',
     author_email='a@nesterof.com',

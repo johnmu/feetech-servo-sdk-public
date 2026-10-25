@@ -1,5 +1,41 @@
 # Feetech-Servo-SDK [![Platforms](https://img.shields.io/badge/Raspberry%20Pi-A22846?style=for-the-badge&logo=Raspberry%20Pi&logoColor=white)](https://img.shields.io/badge/Raspberry%20Pi-A22846?style=for-the-badge&logo=Raspberry%20Pi&logoColor=white) [![Language](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) [![IDE](https://img.shields.io/badge/PyCharm-000000.svg?&style=for-the-badge&logo=PyCharm&logoColor=white)](https://img.shields.io/badge/PyCharm-000000.svg?&style=for-the-badge&logo=PyCharm&logoColor=white) [![adam package](https://img.shields.io/badge/adam_package-red?style=for-the-badge&logo=python&logoColor=white)](https://github.com/Adam-Software)
 
+## Fork release and automated tests
+
+This fork starts at upstream tag `v.1.0.0` and validates response lengths before
+returning register data. Related upstream report:
+https://github.com/Adam-Software/Feetech-Servo-SDK/issues/5
+
+With the SDK's PySerial dependency installed, run the hardware-free tests:
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+The tests use synthetic serial bytes with the real checksum parser. They do not
+open a serial device or command motors. Valid high-temperature readings are
+preserved. Length checks cannot identify stale replies of the same size.
+
+Fork wheels use a distinct local version, currently `1.0.0+johnmu.1`. Releases
+retain the wheel, source commit, and SHA-256. Rebuild from the exact tagged source
+in an isolated environment with `setuptools==81.0.0`, `wheel==0.45.1`, and
+`pyserial==3.5`:
+
+```sh
+python - <<'PY'
+import os
+import subprocess
+import sys
+epoch = subprocess.check_output(
+    ['git', 'show', '-s', '--format=%ct', 'HEAD'], text=True).strip()
+subprocess.run([sys.executable, 'setup.py', 'bdist_wheel'],
+               env=dict(os.environ, SOURCE_DATE_EPOCH=epoch), check=True)
+PY
+```
+
+Consumers should pin the release wheel URL and SHA-256 rather than an unversioned
+branch. Installation and packet tests do not qualify physical thermal behavior.
+
 
 [![License](https://img.shields.io/github/license/Adam-Software/Feetech-Servo-SDK.svg)](https://img.shields.io/github/license/Adam-Software/Feetech-Servo-SDK.svg)
 [![PyPI version](https://badge.fury.io/py/feetech-servo-sdk.svg)](https://badge.fury.io/py/feetech-servo-sdk) 
