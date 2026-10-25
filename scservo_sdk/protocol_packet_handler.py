@@ -275,6 +275,9 @@ class protocol_packet_handler(object):
         if result == COMM_SUCCESS and rxpacket[PKT_ID] == scs_id:
             error = rxpacket[PKT_ERROR]
 
+            if rxpacket[PKT_LENGTH] != length + 2 or len(rxpacket) != length + 6:
+                return [], COMM_RX_CORRUPT, error
+
             data.extend(rxpacket[PKT_PARAMETER0: PKT_PARAMETER0 + length])
 
         return data, result, error
@@ -295,6 +298,9 @@ class protocol_packet_handler(object):
         rxpacket, result, error = self.txRxPacket(port, txpacket)
         if result == COMM_SUCCESS:
             error = rxpacket[PKT_ERROR]
+
+            if rxpacket[PKT_LENGTH] != length + 2 or len(rxpacket) != length + 6:
+                return [], COMM_RX_CORRUPT, error
 
             data.extend(rxpacket[PKT_PARAMETER0: PKT_PARAMETER0 + length])
 
